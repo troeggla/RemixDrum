@@ -83,7 +83,7 @@ void loop() {
   Wire.beginTransmission(MPU);
   Wire.write(0X3B);
   Wire.endTransmission(false);
-  Wire.requestFrom(MPU,14,true); // Reading MPU6050 data (14 bytes)
+  Wire.requestFrom(MPU, 14, 1); // Reading MPU6050 data (14 bytes)
   // Reading the gyroscope
   GyX=Wire.read()<<8|Wire.read();  //0x3B (GYRO_XOUT_H) & 0x3C (GYRO_XOUT_L)     
   GyY=Wire.read()<<8|Wire.read();  //0x3D (GYRO_YOUT_H) & 0x3E (GYRO_YOUT_L)
