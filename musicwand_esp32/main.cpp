@@ -13,6 +13,8 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 
+#define TOUCH_TRESHOLD 150000
+
 // Constants
 #define touch 14 // Touch sensor pin (D5 pin on ESP8266)
 const int MPU=0x68; // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
@@ -29,9 +31,17 @@ int GyX, GyY, GyZ; // Gyroscope X, Y and Z axis
 int minVal=0; // Minimum value of MPU6050
 int maxVal=65536;
 
+int capTouchRead(uint8_t pin) {
+  if (touchRead(pin) >= TOUCH_TRESHOLD) {
+    return HIGH;
+  }
+
+  return LOW;
+}
+
 void setup() {
   // Baud Rate
-  Serial.begin(9600); 
+  Serial.begin(9600);
 
   // Connecting to Wi-Fi Network
   Serial.println();
