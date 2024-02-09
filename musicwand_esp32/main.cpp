@@ -9,7 +9,7 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 
 // Include Libraries
 #include<Wire.h>
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 
@@ -53,8 +53,8 @@ void setup() {
   Serial.println("Starting UDP");
   Udp.begin(localPort);
   Serial.print("Local port: ");
-  Serial.println(Udp.localPort());
-  
+  Serial.println(localPort);
+
   // Input touch pin
   pinMode(touch, INPUT);
 
