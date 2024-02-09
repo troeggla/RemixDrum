@@ -85,7 +85,7 @@ int value = 0;
 void loop() {
   
   // Touch sensor logic
-  value = digitalRead(touch); // Reading the touch sensor
+  value = capTouchRead(touch); // Reading the touch sensor
   Serial.println(value); // Print touch sensor in serial monitor
   delay(50); // Touch sensor reading time (50 ms)
 
