@@ -1,25 +1,25 @@
-/* 
+/*
 Music Wand
 Created by: Rômulo Vieira, Célio Albuquerque & Débora Muchaluat-Saade
-Fluminense Federal University (UFF) - Brazil 
+Fluminense Federal University (UFF) - Brazil
 GNU General Public License v3
 
 Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 */
 
 // Include Libraries
-#include<Wire.h>
+#include <Wire.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 
-#define TOUCH_TRESHOLD 150000
-
 // Constants
-#define touch 14 // Touch sensor pin (D5 pin on ESP8266)
+#define TOUCH_TRESHOLD 150000
+#define TOUCH_PIN 14 // Touch sensor pin (D5 pin on ESP8266)
+
 const int MPU=0x68; // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
-const IPAddress outIp(255,255,255,255); // Client computer IP 
-const unsigned int outPort = 9999; // Client computerr port 
+const IPAddress outIp(255,255,255,255); // Client computer IP
+const unsigned int outPort = 9999; // Client computer port
 const unsigned int outPort2 = 7777; // Client computer port 2
 const unsigned int localPort = 2390; // Local port to listen to OSC packets
 
@@ -66,26 +66,24 @@ void setup() {
   Serial.println(localPort);
 
   // Input touch pin
-  pinMode(touch, INPUT);
+  pinMode(TOUCH_PIN, INPUT);
 
   // Setting MPU6050 accelerometer
   Wire.begin();
   Wire.beginTransmission(MPU); // Starting broadcast transmission with MPU address
   Wire.write(0X6B);
 
-  // REading the MPU6050 accelerometer
+  // Reading the MPU6050 accelerometer
   Wire.write(0);
   Wire.endTransmission(true);
-  
 }
 
 // Touch sensor status variable
 int value = 0;
 
 void loop() {
-  
   // Touch sensor logic
-  value = capTouchRead(touch); // Reading the touch sensor
+  value = capTouchRead(TOUCH_PIN); // Reading the touch sensor
   Serial.println(value); // Print touch sensor in serial monitor
   delay(50); // Touch sensor reading time (50 ms)
 
@@ -94,8 +92,9 @@ void loop() {
   Wire.write(0X3B);
   Wire.endTransmission(false);
   Wire.requestFrom(MPU, 14, 1); // Reading MPU6050 data (14 bytes)
+
   // Reading the gyroscope
-  GyX=Wire.read()<<8|Wire.read();  //0x3B (GYRO_XOUT_H) & 0x3C (GYRO_XOUT_L)     
+  GyX=Wire.read()<<8|Wire.read();  //0x3B (GYRO_XOUT_H) & 0x3C (GYRO_XOUT_L)
   GyY=Wire.read()<<8|Wire.read();  //0x3D (GYRO_YOUT_H) & 0x3E (GYRO_YOUT_L)
   GyZ=Wire.read()<<8|Wire.read();  //0x3F (GYRO_ZOUT_H) & 0x40 (GYRO_ZOUT_L)
 
@@ -104,7 +103,7 @@ void loop() {
   int yAng = map(GyY,minVal,maxVal,0,180);
   int zAng = map(GyZ,minVal,maxVal,0,180);
 
-   // Send X axis to serial monitor
+  // Send X axis to serial monitor
   Serial.print(" | GyX = "); Serial.print(xAng);
   // Send Y axis to serial monitor
   Serial.print(" | GyY = "); Serial.print(yAng);
@@ -112,7 +111,7 @@ void loop() {
   Serial.print(" | GyZ = "); Serial.println(zAng);
   delay(300); // Gyroscope reading time (300 ms)
 
- // Send touch sensor message to the client with OSC protocol
+  // Send touch sensor message to the client with OSC protocol
   OSCMessage botao("/value");
   botao.add((int32_t)int(value));
   Udp.beginPacket(outIp, outPort);
@@ -165,5 +164,4 @@ void loop() {
   Udp.endPacket();
   axleZ.empty();
   delay(100);
-
 }
