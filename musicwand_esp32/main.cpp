@@ -13,12 +13,12 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 
+#include "gyroscope.hpp"
+
 // Constants
 #define TOUCH_THRESHOLD 150000 // Threshold for recognising touch on capacitive touch pins
-#define TOUCH_PIN 14 // Touch sensor pin (D5 pin on ESP8266)
+#define TOUCH_PIN D0 // Touch sensor pin (D0 pin on ESP32)
 #define MPU_ADDRESS 0x68 // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
-#define GYRO_MIN 0 // Minimum value returned by the gyroscope
-#define GYRO_MAX 65536 // Maximum value returned by the gyroscope
 
 const IPAddress outIp(255,255,255,255); // Client computer IP
 const unsigned int outPort = 9999; // Client computer port for Pure Data
@@ -31,6 +31,9 @@ char pass[] = "romulo182"; // EDIT: Network password
 
 // UDP socket
 WiFiUDP socket;
+
+// Gyroscope
+Gyroscope gyro(MPU_ADDRESS);
 
 /**
  * Reads from a qTouch-enabled pin and returns HIGH or LOW.
@@ -103,14 +106,8 @@ void setup() {
   // Input touch pin
   pinMode(TOUCH_PIN, INPUT);
 
-  // Setting MPU6050 accelerometer
-  Wire.begin();
-  Wire.beginTransmission(MPU_ADDRESS); // Starting broadcast transmission with MPU address
-  Wire.write(0X6B);
-
-  // Reading the MPU6050 accelerometer
-  Wire.write(0);
-  Wire.endTransmission(true);
+  // Initialise gyroscope
+  gyro.begin();
 }
 
 void loop() {
@@ -119,28 +116,15 @@ void loop() {
   Serial.println(value); // Print touch sensor in serial monitor
   delay(50); // Touch sensor reading time (50 ms)
 
-  // Accelerometer MPU6050 logic
-  Wire.beginTransmission(MPU_ADDRESS);
-  Wire.write(0X3B);
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU_ADDRESS, 14, 1); // Reading MPU6050 data (14 bytes)
-
-  // Reading the gyroscope
-  int gyro_X = Wire.read() << 8 | Wire.read();  //0x3B (GYRO_XOUT_H) & 0x3C (GYRO_XOUT_L)
-  int gyro_Y = Wire.read() << 8 | Wire.read();  //0x3D (GYRO_YOUT_H) & 0x3E (GYRO_YOUT_L)
-  int gyro_Z = Wire.read() << 8 | Wire.read();  //0x3F (GYRO_ZOUT_H) & 0x40 (GYRO_ZOUT_L)
-
-  // Change the gyroscope's range (0º to 180º)
-  int xAng = map(gyro_X, GYRO_MIN, GYRO_MAX, 0, 180);
-  int yAng = map(gyro_Y, GYRO_MIN, GYRO_MAX, 0, 180);
-  int zAng = map(gyro_Z, GYRO_MIN, GYRO_MAX, 0, 180);
+  // Get reading from gyroscope
+  gyro.measure();
 
   // Send X axis to serial monitor
-  Serial.print(" | GyX = "); Serial.print(xAng);
+  Serial.print(" | GyX = "); Serial.print(gyro.getX());
   // Send Y axis to serial monitor
-  Serial.print(" | GyY = "); Serial.print(yAng);
+  Serial.print(" | GyY = "); Serial.print(gyro.getY());
   // Send Z axis to serial monitor
-  Serial.print(" | GyZ = "); Serial.println(zAng);
+  Serial.print(" | GyZ = "); Serial.println(gyro.getZ());
   delay(300); // Gyroscope reading time (300 ms)
 
   // Send touch sensor message to the client with OSC protocol
@@ -148,22 +132,22 @@ void loop() {
   delay(500);
 
   // Sending accelerometer X-axis message to Pure Data
-  sendOSCMessage(outIp, outPort, "/gyx", xAng);
+  sendOSCMessage(outIp, outPort, "/gyx", gyro.getX());
   delay(10);
 
   // Sending accelerometer X-axis message to Processing
-  sendOSCMessage(outIp, outPort2, "/gyx", xAng);
+  sendOSCMessage(outIp, outPort2, "/gyx", gyro.getX());
   delay(10);
 
   // Sending accelerometer Y-axis message to Pure Data
-  sendOSCMessage(outIp, outPort, "/gyy", yAng);
+  sendOSCMessage(outIp, outPort, "/gyy", gyro.getY());
   delay(10);
 
   // Sending accelerometer Y-axis message to Processing
-  sendOSCMessage(outIp, outPort2, "/gyy", yAng);
+  sendOSCMessage(outIp, outPort2, "/gyy", gyro.getY());
   delay(10);
 
   // Sending accelerometer Z axis message to Pure Data
-  sendOSCMessage(outIp, outPort, "/gyz", zAng);
+  sendOSCMessage(outIp, outPort, "/gyz", gyro.getZ());
   delay(100);
 }
