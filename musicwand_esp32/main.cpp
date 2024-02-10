@@ -39,6 +39,17 @@ int capTouchRead(uint8_t pin) {
   return LOW;
 }
 
+void sendOSCMessage(IPAddress ip, unsigned int port, const char route[], int32_t value) {
+  OSCMessage message("/gyx");
+  message.add(value);
+
+  Udp.beginPacket(ip, port);
+  message.send(Udp);
+  Udp.endPacket();
+
+  message.empty();
+}
+
 void setup() {
   // Baud Rate
   Serial.begin(9600);
@@ -112,56 +123,26 @@ void loop() {
   delay(300); // Gyroscope reading time (300 ms)
 
   // Send touch sensor message to the client with OSC protocol
-  OSCMessage botao("/value");
-  botao.add((int32_t)int(value));
-  Udp.beginPacket(outIp, outPort);
-  botao.send(Udp);
-  Udp.endPacket();
-  botao.empty();
+  sendOSCMessage(outIp, outPort, "/value", value);
   delay(500);
 
   // Sending accelerometer X-axis message to Pure Data
-  OSCMessage axleX("/gyx");
-  axleX.add((int32_t)int(xAng));
-  Udp.beginPacket(outIp, outPort);
-  axleX.send(Udp);
-  Udp.endPacket();
-  axleX.empty();
+  sendOSCMessage(outIp, outPort, "/gyx", xAng);
   delay(10);
 
-  // Sending accelerometer Y-axis message to Processing
-  OSCMessage processingaxleX("/gyx");
-  processingaxleX.add((int32_t)int(xAng));
-  Udp.beginPacket(outIp, outPort2);
-  processingaxleX.send(Udp);
-  Udp.endPacket();
-  processingaxleX.empty();
+  // Sending accelerometer X-axis message to Processing
+  sendOSCMessage(outIp, outPort2, "/gyx", xAng);
   delay(10);
 
   // Sending accelerometer Y-axis message to Pure Data
-  OSCMessage axleY("/gyy");
-  axleY.add((int32_t)int(yAng));
-  Udp.beginPacket(outIp, outPort);
-  axleY.send(Udp);
-  Udp.endPacket();
-  axleY.empty();
+  sendOSCMessage(outIp, outPort, "/gyy", yAng);
   delay(10);
 
   // Sending accelerometer Y-axis message to Processing
-  OSCMessage processingaxleY("/gyy");
-  processingaxleY.add((int32_t)int(yAng));
-  Udp.beginPacket(outIp, outPort2);
-  processingaxleY.send(Udp);
-  Udp.endPacket();
-  processingaxleY.empty();
+  sendOSCMessage(outIp, outPort2, "/gyy", yAng);
   delay(10);
 
-  // Sending accelerometer Z axis message
-  OSCMessage axleZ("/gyz");
-  axleZ.add((int32_t)int(zAng));
-  Udp.beginPacket(outIp, outPort);
-  axleZ.send(Udp);
-  Udp.endPacket();
-  axleZ.empty();
+  // Sending accelerometer Z axis message to Pure Data
+  sendOSCMessage(outIp, outPort, "/gyz", zAng);
   delay(100);
 }
