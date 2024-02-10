@@ -14,23 +14,23 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 #include <OSCMessage.h>
 
 // Constants
-#define TOUCH_THRESHOLD 150000
+#define TOUCH_THRESHOLD 150000 // Threshold for recognising touch on capacitive touch pins
 #define TOUCH_PIN 14 // Touch sensor pin (D5 pin on ESP8266)
+#define MPU_ADDRESS 0x68 // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
+#define GYRO_MIN 0 // Minimum value returned by the gyroscope
+#define GYRO_MAX 65536 // Maximum value returned by the gyroscope
 
-const int MPU = 0x68; // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
 const IPAddress outIp(255,255,255,255); // Client computer IP
-const unsigned int outPort = 9999; // Client computer port
-const unsigned int outPort2 = 7777; // Client computer port 2
-const unsigned int localPort = 2390; // Local port to listen to OSC packets
+const unsigned int outPort = 9999; // Client computer port for Pure Data
+const unsigned int outPort2 = 7777; // Client computer port for Processing
+const unsigned int localPort = 2390; // Local port to listen for OSC packets
 
-// Variable
+// SSID and password for WiFi
 char ssid[] = "Romulo"; // EDIT: Network name
 char pass[] = "romulo182"; // EDIT: Network password
 
-WiFiUDP Udp; // Instance that allows sending and receiving packets using UDP packet
-int GyX, GyY, GyZ; // Gyroscope X, Y and Z axis
-int minVal=0; // Minimum value of MPU6050
-int maxVal=65536;
+// UDP socket
+WiFiUDP socket;
 
 /**
  * Reads from a qTouch-enabled pin and returns HIGH or LOW.
@@ -65,9 +65,9 @@ void sendOSCMessage(IPAddress ip, unsigned int port, const char route[], int32_t
   message.add(value);
 
   // Send message via UDP
-  Udp.beginPacket(ip, port);
-  message.send(Udp);
-  Udp.endPacket();
+  socket.beginPacket(ip, port);
+  message.send(socket);
+  socket.endPacket();
 
   // Clear message
   message.empty();
@@ -96,7 +96,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting UDP");
-  Udp.begin(localPort);
+  socket.begin(localPort);
   Serial.print("Local port: ");
   Serial.println(localPort);
 
@@ -105,7 +105,7 @@ void setup() {
 
   // Setting MPU6050 accelerometer
   Wire.begin();
-  Wire.beginTransmission(MPU); // Starting broadcast transmission with MPU address
+  Wire.beginTransmission(MPU_ADDRESS); // Starting broadcast transmission with MPU address
   Wire.write(0X6B);
 
   // Reading the MPU6050 accelerometer
@@ -120,20 +120,20 @@ void loop() {
   delay(50); // Touch sensor reading time (50 ms)
 
   // Accelerometer MPU6050 logic
-  Wire.beginTransmission(MPU);
+  Wire.beginTransmission(MPU_ADDRESS);
   Wire.write(0X3B);
   Wire.endTransmission(false);
-  Wire.requestFrom(MPU, 14, 1); // Reading MPU6050 data (14 bytes)
+  Wire.requestFrom(MPU_ADDRESS, 14, 1); // Reading MPU6050 data (14 bytes)
 
   // Reading the gyroscope
-  GyX = Wire.read() << 8 | Wire.read();  //0x3B (GYRO_XOUT_H) & 0x3C (GYRO_XOUT_L)
-  GyY = Wire.read() << 8 | Wire.read();  //0x3D (GYRO_YOUT_H) & 0x3E (GYRO_YOUT_L)
-  GyZ = Wire.read() << 8 | Wire.read();  //0x3F (GYRO_ZOUT_H) & 0x40 (GYRO_ZOUT_L)
+  int gyro_X = Wire.read() << 8 | Wire.read();  //0x3B (GYRO_XOUT_H) & 0x3C (GYRO_XOUT_L)
+  int gyro_Y = Wire.read() << 8 | Wire.read();  //0x3D (GYRO_YOUT_H) & 0x3E (GYRO_YOUT_L)
+  int gyro_Z = Wire.read() << 8 | Wire.read();  //0x3F (GYRO_ZOUT_H) & 0x40 (GYRO_ZOUT_L)
 
   // Change the gyroscope's range (0º to 180º)
-  int xAng = map(GyX, minVal, maxVal, 0, 180);
-  int yAng = map(GyY, minVal, maxVal, 0, 180);
-  int zAng = map(GyZ, minVal, maxVal, 0, 180);
+  int xAng = map(gyro_X, GYRO_MIN, GYRO_MAX, 0, 180);
+  int yAng = map(gyro_Y, GYRO_MIN, GYRO_MAX, 0, 180);
+  int zAng = map(gyro_Z, GYRO_MIN, GYRO_MAX, 0, 180);
 
   // Send X axis to serial monitor
   Serial.print(" | GyX = "); Serial.print(xAng);
