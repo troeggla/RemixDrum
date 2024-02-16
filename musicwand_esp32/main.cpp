@@ -3,7 +3,7 @@ Music Wand
 Created by: Rômulo Vieira, Célio Albuquerque & Débora Muchaluat-Saade
 Fluminense Federal University (UFF) - Brazil
 Updated by: Thomas Röggla
-Centrum Wiskunde & Informatica
+Centrum Wiskunde & Informatica (CWI) - Netherlands
 GNU General Public License v3
 
 Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
@@ -20,7 +20,7 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 
 // Constants
 #define TOUCH_PIN D0 // Touch sensor pin (D0 pin on ESP32)
-#define MPU_ADDRESS 0x68 // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
+#define MPU_ADDRESS 0x68 // I2C address for the MPU6050 accelerometer
 
 // Port definitiions
 #define PURE_DATA_PORT 9999
@@ -46,7 +46,8 @@ void setup() {
 
   // Connecting to Wi-Fi Network
   Serial.print("Connecting to ");
-  Serial.println(WIFI_SSID);
+  Serial.print(WIFI_SSID);
+  Serial.println(" ");
 
   WiFi.begin(WIFI_SSID, WIFI_PASS);
 
@@ -57,8 +58,8 @@ void setup() {
 
   Serial.println();
 
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
+  Serial.println("WiFi connected!");
+  Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting UDP");
@@ -71,17 +72,20 @@ void setup() {
 void loop() {
   // Touch sensor logic
   int padIsTouched = touchPad.isTouched(); // Reading the touch sensor
-  Serial.println(padIsTouched); // Print touch sensor in serial monitor
+  Serial.print(padIsTouched); // Print touch sensor in serial monitor
 
   // Get reading from gyroscope
   gyro.measure();
 
   // Send X axis to serial monitor
-  Serial.print(" | GyX = "); Serial.print(gyro.getX());
+  Serial.print(" | GyX = ");
+  Serial.print(gyro.getX());
   // Send Y axis to serial monitor
-  Serial.print(" | GyY = "); Serial.print(gyro.getY());
+  Serial.print(" | GyY = ");
+  Serial.print(gyro.getY());
   // Send Z axis to serial monitor
-  Serial.print(" | GyZ = "); Serial.println(gyro.getZ());
+  Serial.print(" | GyZ = ");
+  Serial.println(gyro.getZ());
 
   // Send touch sensor message to the client with OSC protocol
   pureDataEndPoint.sendMessage("/value", padIsTouched);
@@ -98,5 +102,6 @@ void loop() {
 
   // Sending accelerometer Z axis message to Pure Data
   pureDataEndPoint.sendMessage("/gyz", gyro.getZ());
+
   delay(100);
 }
