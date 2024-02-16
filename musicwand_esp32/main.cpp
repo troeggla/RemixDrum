@@ -8,24 +8,31 @@ GNU General Public License v3
 
 Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 */
-
 #include <WiFi.h>
 
 #include "gyroscope.hpp"
 #include "capacitive_touch_pad.hpp"
 #include "osc_endpoint.hpp"
 
-// Constants
-#define TOUCH_PIN D0 // Touch sensor pin (D0 pin on ESP32)
-#define MPU_ADDRESS 0x68 // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
-#define LOCAL_PORT 2390
-
 // SSID and password for WiFi
 #define WIFI_SSID "Romulo" // EDIT: Network name
 #define WIFI_PASS "romulo182" // EDIT: Network password
 
+// Constants
+#define TOUCH_PIN D0 // Touch sensor pin (D0 pin on ESP32)
+#define MPU_ADDRESS 0x68 // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
+
+// Port definitiions
+#define PURE_DATA_PORT 9999
+#define PROCESSING_PORT 7777
+#define LOCAL_PORT 2390
+
 // UDP socket
 WiFiUDP socket;
+
+// OSC endpoints
+OSCEndpoint pureDataEndPoint(socket, PURE_DATA_PORT);
+OSCEndpoint processingEndPoint(socket, PROCESSING_PORT);
 
 // Gyroscope
 Gyroscope gyro(MPU_ADDRESS);
@@ -33,19 +40,14 @@ Gyroscope gyro(MPU_ADDRESS);
 // Capacitive touch pad
 CapacitiveTouchPad touchPad(TOUCH_PIN);
 
-// OSC endpoints
-OSCEndpoint pureDataEndPoint(socket, 9999);
-OSCEndpoint processingEndPoint(socket, 7777);
-
 void setup() {
   // Baud Rate
   Serial.begin(9600);
 
   // Connecting to Wi-Fi Network
-  Serial.println();
-  Serial.println();
   Serial.print("Connecting to ");
   Serial.println(WIFI_SSID);
+
   WiFi.begin(WIFI_SSID, WIFI_PASS);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -53,7 +55,7 @@ void setup() {
     Serial.print(".");
   }
 
-  Serial.println("");
+  Serial.println();
 
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
