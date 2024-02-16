@@ -23,16 +23,18 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 #define LOCAL_PORT 2390
 
 // SSID and password for WiFi
-char ssid[] = "Romulo"; // EDIT: Network name
-char pass[] = "romulo182"; // EDIT: Network password
+#define WIFI_SSID "Romulo" // EDIT: Network name
+#define WIFI_PASS "romulo182" // EDIT: Network password
 
 // UDP socket
 WiFiUDP socket;
 
 // Gyroscope
 Gyroscope gyro(MPU_ADDRESS);
+
 // Capacitive touch pad
 CapacitiveTouchPad touchPad(TOUCH_PIN);
+
 // OSC endpoints
 OSCEndpoint pureDataEndPoint(socket, 9999);
 OSCEndpoint processingEndPoint(socket, 7777);
@@ -45,8 +47,8 @@ void setup() {
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, pass);
+  Serial.println(WIFI_SSID);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
