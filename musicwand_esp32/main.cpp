@@ -20,11 +20,7 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 // Constants
 #define TOUCH_PIN D0 // Touch sensor pin (D0 pin on ESP32)
 #define MPU_ADDRESS 0x68 // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
-
-const IPAddress outIp(255,255,255,255); // Client computer IP
-const unsigned int outPort = 9999; // Client computer port for Pure Data
-const unsigned int outPort2 = 7777; // Client computer port for Processing
-const unsigned int localPort = 2390; // Local port to listen for OSC packets
+#define LOCAL_PORT 2390
 
 // SSID and password for WiFi
 char ssid[] = "Romulo"; // EDIT: Network name
@@ -64,7 +60,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   Serial.println("Starting UDP");
-  socket.begin(localPort);
+  socket.begin(LOCAL_PORT);
 
   // Initialise gyroscope
   gyro.begin();
