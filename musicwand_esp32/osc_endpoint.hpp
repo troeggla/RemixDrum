@@ -10,13 +10,11 @@
 class OSCEndpoint {
   WiFiUDP socket;
   IPAddress remoteAddress;
-  uint8_t remotePort;
-  uint8_t localPort;
+  uint16_t remotePort;
 
 public:
-  OSCEndpoint(WiFiUDP socket, uint8_t remotePort) : OSCEndpoint(socket, IPAddress(255, 255, 255, 255), remotePort) {}
-  OSCEndpoint(WiFiUDP socket, IPAddress remoteAddress, uint8_t remotePort) : OSCEndpoint(socket, remoteAddress, remotePort, LOCAL_PORT) {}
-  OSCEndpoint(WiFiUDP socket, IPAddress remoteAddress, uint8_t remotePort, uint8_t localPort) : socket(socket), remoteAddress(remoteAddress), remotePort(remotePort), localPort(localPort) {}
+  OSCEndpoint(WiFiUDP socket, uint16_t remotePort) : OSCEndpoint(socket, IPAddress(255, 255, 255, 255), remotePort) {}
+  OSCEndpoint(WiFiUDP socket, IPAddress remoteAddress, uint8_t remotePort) : socket(socket), remoteAddress(remoteAddress), remotePort(remotePort) {}
 
   void sendMessage(const char route[], int32_t value);
 };
