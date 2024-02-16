@@ -14,9 +14,9 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 #include <OSCMessage.h>
 
 #include "gyroscope.hpp"
+#include "capacitive_touch_pad.hpp"
 
 // Constants
-#define TOUCH_THRESHOLD 150000 // Threshold for recognising touch on capacitive touch pins
 #define TOUCH_PIN D0 // Touch sensor pin (D0 pin on ESP32)
 #define MPU_ADDRESS 0x68 // Address on the NOdeMCU v3 board for the MPU6050 accelerometer
 
@@ -34,24 +34,8 @@ WiFiUDP socket;
 
 // Gyroscope
 Gyroscope gyro(MPU_ADDRESS);
-
-/**
- * Reads from a qTouch-enabled pin and returns HIGH or LOW.
- * The threshold required for returning HIGH can be adjusted by changing the
- * TOUCH_THRESHOLD constant.
- *
- * @param pin The pin to read from
- * @returns HIGH if the value read from the pin is greater than TOUCH_THRESHOLD, LOW otherwise
-*/
-int capTouchRead(uint8_t pin) {
-  // Return HIGH if the value read on the pin is greater than TOUCH_THRESHOLD
-  if (touchRead(pin) >= TOUCH_THRESHOLD) {
-    return HIGH;
-  }
-
-  // Otherwise, return LOW
-  return LOW;
-}
+// Capacitive touch pad
+CapacitiveTouchPad touchPad(TOUCH_PIN);
 
 /**
  * Sends an OSC message with the given value and route to the given IP and port.
@@ -112,8 +96,8 @@ void setup() {
 
 void loop() {
   // Touch sensor logic
-  int value = capTouchRead(TOUCH_PIN); // Reading the touch sensor
-  Serial.println(value); // Print touch sensor in serial monitor
+  int padIsTouched = touchPad.isTouched(); // Reading the touch sensor
+  Serial.println(padIsTouched); // Print touch sensor in serial monitor
   delay(50); // Touch sensor reading time (50 ms)
 
   // Get reading from gyroscope
@@ -128,7 +112,7 @@ void loop() {
   delay(300); // Gyroscope reading time (300 ms)
 
   // Send touch sensor message to the client with OSC protocol
-  sendOSCMessage(outIp, outPort, "/value", value);
+  sendOSCMessage(outIp, outPort, "/value", padIsTouched);
   delay(500);
 
   // Sending accelerometer X-axis message to Pure Data
