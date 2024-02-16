@@ -10,9 +10,9 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 */
 #include <WiFi.h>
 
-#include "gyroscope.hpp"
-#include "capacitive_touch_pad.hpp"
-#include "osc_endpoint.hpp"
+#include "classes/gyroscope.hpp"
+#include "classes/capacitive_touch_pad.hpp"
+#include "classes/osc_endpoint.hpp"
 
 // SSID and password for WiFi
 #define WIFI_SSID "Romulo" // EDIT: Network name
