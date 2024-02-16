@@ -2,6 +2,8 @@
 Music Wand
 Created by: Rômulo Vieira, Célio Albuquerque & Débora Muchaluat-Saade
 Fluminense Federal University (UFF) - Brazil
+Updated by: Thomas Röggla
+Centrum Wiskunde & Informatica
 GNU General Public License v3
 
 Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
