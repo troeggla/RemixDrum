@@ -12,4 +12,5 @@ void OSCEndpoint::sendMessage(const char route[], int32_t value) {
 
   // Clear message
   message.empty();
+  delay(10);
 }

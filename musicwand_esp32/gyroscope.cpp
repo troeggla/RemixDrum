@@ -18,6 +18,8 @@ void Gyroscope::measure() {
   Wire.endTransmission(false);
   Wire.requestFrom(address, 14, 1); // Reading MPU6050 data (14 bytes)
 
+  delay(300); // Gyroscope reading time (300 ms)
+
   // Reading the gyroscope
   int gyro_X = Wire.read() << 8 | Wire.read();  //0x3B (GYRO_XOUT_H) & 0x3C (GYRO_XOUT_L)
   int gyro_Y = Wire.read() << 8 | Wire.read();  //0x3D (GYRO_YOUT_H) & 0x3E (GYRO_YOUT_L)
