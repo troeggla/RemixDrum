@@ -8,18 +8,16 @@
 #define LOCAL_PORT 2390
 
 class OSCEndpoint {
+  WiFiUDP socket;
   IPAddress remoteAddress;
   uint8_t remotePort;
   uint8_t localPort;
 
-  WiFiUDP socket;
-
 public:
-  OSCEndpoint(uint8_t remotePort) : OSCEndpoint(IPAddress(255, 255, 255, 255), remotePort) {}
-  OSCEndpoint(IPAddress remoteAddress, uint8_t remotePort) : OSCEndpoint(remoteAddress, remotePort, LOCAL_PORT) {}
-  OSCEndpoint(IPAddress remoteAddress, uint8_t remotePort, uint8_t localPort) : remoteAddress(remoteAddress), remotePort(remotePort), localPort(localPort) {}
+  OSCEndpoint(WiFiUDP socket, uint8_t remotePort) : OSCEndpoint(socket, IPAddress(255, 255, 255, 255), remotePort) {}
+  OSCEndpoint(WiFiUDP socket, IPAddress remoteAddress, uint8_t remotePort) : OSCEndpoint(socket, remoteAddress, remotePort, LOCAL_PORT) {}
+  OSCEndpoint(WiFiUDP socket, IPAddress remoteAddress, uint8_t remotePort, uint8_t localPort) : socket(socket), remoteAddress(remoteAddress), remotePort(remotePort), localPort(localPort) {}
 
-  void begin();
   void sendMessage(const char route[], int32_t value);
 };
 
