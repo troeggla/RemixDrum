@@ -5,8 +5,6 @@
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 
-#define LOCAL_PORT 2390
-
 class OSCEndpoint {
   WiFiUDP& socket;
   IPAddress remoteAddress;
