@@ -7,11 +7,7 @@ GNU General Public License v3
 Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 */
 
-// Include Libraries
-#include <Wire.h>
 #include <WiFi.h>
-#include <WiFiUdp.h>
-#include <OSCMessage.h>
 
 #include "gyroscope.hpp"
 #include "capacitive_touch_pad.hpp"
