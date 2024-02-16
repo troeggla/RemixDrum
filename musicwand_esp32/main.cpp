@@ -70,10 +70,10 @@ void loop() {
   // Touch sensor logic
   int padIsTouched = touchPad.isTouched(); // Reading the touch sensor
   Serial.println(padIsTouched); // Print touch sensor in serial monitor
-  delay(50); // Touch sensor reading time (50 ms)
 
   // Get reading from gyroscope
   gyro.measure();
+  delay(300); // Gyroscope reading time (300 ms)
 
   // Send X axis to serial monitor
   Serial.print(" | GyX = "); Serial.print(gyro.getX());
@@ -81,11 +81,10 @@ void loop() {
   Serial.print(" | GyY = "); Serial.print(gyro.getY());
   // Send Z axis to serial monitor
   Serial.print(" | GyZ = "); Serial.println(gyro.getZ());
-  delay(300); // Gyroscope reading time (300 ms)
 
   // Send touch sensor message to the client with OSC protocol
   pureDataEndPoint.sendMessage("/value", padIsTouched);
-  delay(500);
+  delay(10);
 
   // Sending accelerometer X-axis message to Pure Data
   pureDataEndPoint.sendMessage("/gyx", gyro.getX());
