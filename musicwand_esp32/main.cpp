@@ -87,9 +87,6 @@ void setup() {
   Serial.print("Local port: ");
   Serial.println(localPort);
 
-  // Input touch pin
-  pinMode(TOUCH_PIN, INPUT);
-
   // Initialise gyroscope
   gyro.begin();
 }

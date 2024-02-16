@@ -11,7 +11,10 @@ class CapacitiveTouchPad {
 
 public:
   CapacitiveTouchPad(uint8_t pin) : CapacitiveTouchPad(pin, TOUCH_THRESHOLD) {}
-  CapacitiveTouchPad(uint8_t pin, touch_value_t threshold) : pin(pin), threshold(threshold) {}
+  CapacitiveTouchPad(uint8_t pin, touch_value_t threshold) : pin(pin), threshold(threshold) {
+    // Input touch pin
+    pinMode(pin, INPUT);
+  }
 
   uint8_t isTouched();
   touch_value_t touchReadValue();
