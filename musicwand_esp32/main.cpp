@@ -42,7 +42,7 @@ CapacitiveTouchPad touchPad(TOUCH_PIN);
 
 void setup() {
   // Baud Rate
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // Connecting to Wi-Fi Network
   Serial.print("Connecting to ");
