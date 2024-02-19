@@ -6,8 +6,8 @@ void Accelerometer::begin() {
   Wire.beginTransmission(address);
   Wire.write(0x6B);
 
-  // Write 0 to register 0x6B to reset the IMU
-  Wire.write(0x00);
+  // Write 1 to bit 7 of register 0x6B to reset the IMU
+  Wire.write(0b10000000);
   Wire.endTransmission(true);
 }
 
