@@ -10,7 +10,7 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 */
 #include <WiFi.h>
 
-#include "classes/gyroscope.hpp"
+#include "classes/accelerometer.hpp"
 #include "classes/capacitive_touch_pad.hpp"
 #include "classes/osc_endpoint.hpp"
 
@@ -35,7 +35,7 @@ OSCEndpoint pureDataEndPoint(socket, PURE_DATA_PORT);
 OSCEndpoint processingEndPoint(socket, PROCESSING_PORT);
 
 // Gyroscope
-Gyroscope gyro(MPU_ADDRESS);
+Accelerometer gyro(MPU_ADDRESS);
 
 // Capacitive touch pad
 CapacitiveTouchPad touchPad(TOUCH_PIN);
