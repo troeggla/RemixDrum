@@ -6,8 +6,8 @@ void Accelerometer::begin() {
   Wire.beginTransmission(address);
   Wire.write(0x6B);
 
-  // Write 1 to bit 7 of register 0x6B to reset the IMU
-  Wire.write(0b10000000);
+  // Reset the IMU
+  Wire.write(0x00);
   Wire.endTransmission(true);
 }
 
@@ -17,8 +17,6 @@ void Accelerometer::measure() {
   Wire.write(0x3B);
   Wire.endTransmission(false);
   Wire.requestFrom(address, 6, 1); // Reading MPU6050 data (6 bytes)
-
-  delay(300); // Accelerometer reading time (300 ms)
 
   // Reading the gyroscope
   int accel_X = Wire.read() << 8 | Wire.read();  //0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)

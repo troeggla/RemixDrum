@@ -22,7 +22,7 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 #define TOUCH_PIN D0 // Touch sensor pin (D0 pin on ESP32)
 #define MPU_ADDRESS 0x68 // I2C address for the MPU6050 accelerometer
 
-// Port definitiions
+// Port definitions
 #define PURE_DATA_PORT 9999
 #define PROCESSING_PORT 7777
 #define LOCAL_PORT 2390
