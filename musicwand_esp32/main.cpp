@@ -75,33 +75,33 @@ void loop() {
   Serial.print(padIsTouched); // Print touch sensor in serial monitor
 
   // Get reading from gyroscope
-  gyro.measure();
+  gyro.measureAccel();
 
   // Send X axis to serial monitor
   Serial.print(" | GyX = ");
-  Serial.print(gyro.getX());
+  Serial.print(gyro.getAccelX());
   // Send Y axis to serial monitor
   Serial.print(" | GyY = ");
-  Serial.print(gyro.getY());
+  Serial.print(gyro.getAccelY());
   // Send Z axis to serial monitor
   Serial.print(" | GyZ = ");
-  Serial.println(gyro.getZ());
+  Serial.println(gyro.getAccelZ());
 
   // Send touch sensor message to the client with OSC protocol
   pureDataEndPoint.sendMessage("/value", padIsTouched);
 
   // Sending accelerometer X-axis message to Pure Data
-  pureDataEndPoint.sendMessage("/gyx", gyro.getX());
+  pureDataEndPoint.sendMessage("/gyx", gyro.getAccelX());
   // Sending accelerometer X-axis message to Processing
-  processingEndPoint.sendMessage("/gyx", gyro.getX());
+  processingEndPoint.sendMessage("/gyx", gyro.getAccelX());
 
   // Sending accelerometer Y-axis message to Pure Data
-  pureDataEndPoint.sendMessage("/gyy", gyro.getY());
+  pureDataEndPoint.sendMessage("/gyy", gyro.getAccelY());
   // Sending accelerometer Y-axis message to Processing
-  processingEndPoint.sendMessage("/gyy", gyro.getY());
+  processingEndPoint.sendMessage("/gyy", gyro.getAccelY());
 
   // Sending accelerometer Z axis message to Pure Data
-  pureDataEndPoint.sendMessage("/gyz", gyro.getZ());
+  pureDataEndPoint.sendMessage("/gyz", gyro.getAccelZ());
 
   delay(100);
 }

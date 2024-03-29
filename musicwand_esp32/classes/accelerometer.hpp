@@ -8,18 +8,29 @@
 
 class Accelerometer {
   int address;
+
   int accelX = 0;
   int accelY = 0;
   int accelZ = 0;
+
+  int gyroX = 0;
+  int gyroY = 0;
+  int gyroZ = 0;
 
 public:
   Accelerometer(int address) : address(address) {};
 
   void begin();
-  void measure();
-  int getX();
-  int getY();
-  int getZ();
+
+  void measureAccel();
+  int getAccelX();
+  int getAccelY();
+  int getAccelZ();
+
+  void measureGyro();
+  int getGyroX();
+  int getGyroY();
+  int getGyroZ();
 };
 
 #endif
