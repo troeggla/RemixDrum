@@ -10,8 +10,8 @@ Buy me a coffee --> paypal: romulo_vieira96@yahoo.com.br
 */
 #include <WiFi.h>
 
-#include "classes/accelerometer.hpp"
 #include "classes/capacitive_touch_pad.hpp"
+#include "classes/imu.hpp"
 #include "classes/osc_endpoint.hpp"
 
 // SSID and password for WiFi
@@ -34,8 +34,8 @@ WiFiUDP socket;
 OSCEndpoint pureDataEndPoint(socket, PURE_DATA_PORT);
 OSCEndpoint processingEndPoint(socket, PROCESSING_PORT);
 
-// Gyroscope
-Accelerometer gyro(MPU_ADDRESS);
+// IMU
+IMU imu(MPU_ADDRESS);
 
 // Capacitive touch pad
 CapacitiveTouchPad touchPad(TOUCH_PIN);
@@ -65,8 +65,8 @@ void setup() {
   Serial.println("Starting UDP");
   socket.begin(LOCAL_PORT);
 
-  // Initialise gyroscope
-  gyro.begin();
+  // Initialise IMU
+  imu.begin();
 }
 
 void loop() {
@@ -74,34 +74,34 @@ void loop() {
   int padIsTouched = touchPad.isTouched(); // Reading the touch sensor
   Serial.print(padIsTouched); // Print touch sensor in serial monitor
 
-  // Get reading from gyroscope
-  gyro.measureAccel();
+  // Get reading from accelerometer
+  imu.measureAccel();
 
   // Send X axis to serial monitor
   Serial.print(" | GyX = ");
-  Serial.print(gyro.getAccelX());
+  Serial.print(imu.getAccelX());
   // Send Y axis to serial monitor
   Serial.print(" | GyY = ");
-  Serial.print(gyro.getAccelY());
+  Serial.print(imu.getAccelY());
   // Send Z axis to serial monitor
   Serial.print(" | GyZ = ");
-  Serial.println(gyro.getAccelZ());
+  Serial.println(imu.getAccelZ());
 
   // Send touch sensor message to the client with OSC protocol
   pureDataEndPoint.sendMessage("/value", padIsTouched);
 
   // Sending accelerometer X-axis message to Pure Data
-  pureDataEndPoint.sendMessage("/gyx", gyro.getAccelX());
+  pureDataEndPoint.sendMessage("/gyx", imu.getAccelX());
   // Sending accelerometer X-axis message to Processing
-  processingEndPoint.sendMessage("/gyx", gyro.getAccelX());
+  processingEndPoint.sendMessage("/gyx", imu.getAccelX());
 
   // Sending accelerometer Y-axis message to Pure Data
-  pureDataEndPoint.sendMessage("/gyy", gyro.getAccelY());
+  pureDataEndPoint.sendMessage("/gyy", imu.getAccelY());
   // Sending accelerometer Y-axis message to Processing
-  processingEndPoint.sendMessage("/gyy", gyro.getAccelY());
+  processingEndPoint.sendMessage("/gyy", imu.getAccelY());
 
   // Sending accelerometer Z axis message to Pure Data
-  pureDataEndPoint.sendMessage("/gyz", gyro.getAccelZ());
+  pureDataEndPoint.sendMessage("/gyz", imu.getAccelZ());
 
   delay(100);
 }

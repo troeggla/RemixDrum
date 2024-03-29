@@ -1,12 +1,12 @@
-#ifndef GRYOSCOPE_H
-#define GRYOSCOPE_H
+#ifndef IMU_H
+#define IMU_H
 
 #include <Arduino.h>
 #include <Wire.h>
 
-#define ACCEL_MAX 65536 // Maximum value returned by the accelerometer
+#define IMU_MAX 65536 // Maximum value returned by the accelerometer
 
-class Accelerometer {
+class IMU {
   int address;
 
   int accelX = 0;
@@ -18,7 +18,7 @@ class Accelerometer {
   int gyroZ = 0;
 
 public:
-  Accelerometer(int address) : address(address) {};
+  IMU(int address) : address(address) {};
 
   void begin();
 
