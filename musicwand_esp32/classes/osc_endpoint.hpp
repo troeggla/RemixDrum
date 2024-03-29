@@ -19,6 +19,7 @@ public:
    * @param remotePort Remote port to send broadcast to
    */
   OSCEndpoint(WiFiUDP& socket, uint16_t remotePort) : OSCEndpoint(socket, IPAddress(255, 255, 255, 255), remotePort) {}
+
   /**
    * @brief Construct a new OSCEndpoint object that sends messages to the given
    * IP address and port using the given UDP socket.
