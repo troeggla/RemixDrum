@@ -4,7 +4,11 @@ from pythonosc import udp_client
 
 
 def main():
-    client = udp_client.SimpleUDPClient("127.0.0.1", 9999)
+    client = udp_client.SimpleUDPClient(
+        "255.255.255.255",
+        9999,
+        allow_broadcast=True
+    )
 
     for x in range(500):
         route = choice(["/gyx", "/gyy", "/gyz", "/value"])
