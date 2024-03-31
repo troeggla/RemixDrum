@@ -1,4 +1,4 @@
-## RemixDrum ESP32
+# RemixDrum ESP32
 
 This directory contains the code for RemixDrum adapted for the ESP32 platform.
 More specifically, this code is intended to run on an Seeed Studio XIAO ESP32S3
